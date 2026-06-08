@@ -1,16 +1,13 @@
 <?php
-session_start();
+require("header.php");
 
-// find out how to explain these so i can remember it later too tired tdy
+// variables for role and session validation
 $user = $_SESSION['user'] ?? null;
 $posterid = $user['id'] ?? null;
 $adminPerm = ($user['role'] ?? null) === 'admin';
 
 if (isset($_GET['id'])) {
   $id = $_GET['id'];
-
-
-  $db = new PDO("mysql:host=localhost;dbname=disc_forum", "root", "root");
 
   $stmt = $db->prepare("SELECT posts.*, users.username AS username FROM posts LEFT JOIN users ON posts.post_by = users.id WHERE posts.id = :id");
   $stmt->execute([
