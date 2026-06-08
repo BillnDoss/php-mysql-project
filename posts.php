@@ -84,6 +84,24 @@ if (isset($_POST['posts_id'])) {
     <p>
       <?= $posts['content'] ?>
     </p>
+    <!-- POST VOTES -->
+    <div class="d-flex align-items-center gap-2 mb-3">
+
+      <form method="post">
+        <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
+        <input type="hidden" name="vote_direction" value="1">
+        <button class="btn btn-outline-success btn-sm">⬆</button>
+      </form>
+
+      <p><?= $postScore ?? 0 ?></p>
+
+      <form method="post">
+        <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
+        <input type="hidden" name="vote_direction" value="-1">
+        <button class="btn btn-outline-danger btn-sm">⬇</button>
+      </form>
+
+    </div>
     <?php if ($posterid && $posterid == $posts['post_by'] || $adminPerm) : ?>
       <div class="buttons d-flex align-items-center">
         <a
@@ -103,25 +121,43 @@ if (isset($_POST['posts_id'])) {
     <?php foreach ($comments as $comment): ?>
       <div class="card">
         <p class="d-flex justify-content-between">
-          <span><?= $comment['commenter'] ?></span> 
+          <span><?= $comment['commenter'] ?></span>
           <span><?= $comment['comment_date'] ?></span>
         </p>
         <p>
           <?= $comment['content'] ?>
         </p>
-        <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'] || $adminPerm)) : ?>
-        <div class="buttons d-flex align-items-center">
-          <a
-            href="manage-comments-edit.php?id=<?= $comment['id'] ?>"
-            class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
+        <!-- COMMENT VOTE -->
+        <div class="d-flex align-items-center gap-2">
+
           <form method="post">
-            <input type="hidden" name="comments_id" value="<?= $comment['id'] ?>">
-            <button class="btn btn-danger btn-sm" type="submit" value="<?= $comment['id'] ?>"><i class="bi bi-trash"></i></button>
+            <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
+            <input type="hidden" name="vote_direction" value="1">
+            <button class="btn btn-sm btn-outline-success">⬆</button>
           </form>
+
+          <strong><?= $commentScores[$comment['id']] ?? 0 ?></strong>
+
+          <form method="post">
+            <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
+            <input type="hidden" name="vote_direction" value="-1">
+            <button class="btn btn-sm btn-outline-danger">⬇</button>
+          </form>
+
         </div>
+        <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'] || $adminPerm)) : ?>
+          <div class="buttons d-flex align-items-center">
+            <a
+              href="manage-comments-edit.php?id=<?= $comment['id'] ?>"
+              class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
+            <form method="post">
+              <input type="hidden" name="comments_id" value="<?= $comment['id'] ?>">
+              <button class="btn btn-danger btn-sm" type="submit" value="<?= $comment['id'] ?>"><i class="bi bi-trash"></i></button>
+            </form>
+          </div>
       </div>
-      <?php endif; ?>
-    <?php endforeach; ?>
+    <?php endif; ?>
+  <?php endforeach; ?>
   </div>
   <div class="text-center">
     <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm"> Add new Comment</a>
