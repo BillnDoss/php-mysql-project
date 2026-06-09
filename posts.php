@@ -115,6 +115,7 @@ $stmt = $db->prepare($showVotesPosts);
 $stmt->execute([':id' => $id]);
 $postVotes = $stmt->fetch();
 
+$usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 ?>
 
 <!DOCTYPE html>

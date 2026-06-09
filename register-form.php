@@ -20,7 +20,7 @@
 
 <body>
   <div class="container my-5 mx-auto" style="max-width: 500px;">
-    <h1 class="h1 mb-4 text-center">Sign Up a New Account</h1>
+    <h1 class="h1 mb-4 text-center d-inline"> <a href="index.php" class="btn btn-primary"><i class="bi bi-arrow-left-circle"></i></a> Sign Up a New Account</h1> 
 
     <div class="card p-4">
       <form method="POST" action="registration.php">
@@ -61,7 +61,6 @@
     <!-- links -->
     <div
       class="d-flex justify-content-between align-items-center gap-3 mx-auto pt-3">
-      <a href="index.php" class="text-decoration-none small"><i class="bi bi-arrow-left-circle"></i> Go back</a>
       <a href="login-form.php" class="text-decoration-none small">Already have an account? Login here
         <i class="bi bi-arrow-right-circle"></i></a>
     </div>
