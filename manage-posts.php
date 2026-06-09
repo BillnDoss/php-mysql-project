@@ -69,9 +69,6 @@ $posts = $stmt->fetchAll();
                     href="posts.php?id=<?= $post['id'] ?>"
                     target="_blank"
                     class="btn btn-primary btn-sm me-2">View</a>
-                  <a
-                    href="manage-posts-edit.php?id=<?= $post['id'] ?>"
-                    class="btn btn-secondary btn-sm me-2 <?= $_SESSION['user']['role'] != 'user' ? '' : 'disabled' ?>">Edit</a>
                   <form method="post" class="d-inline">
                     <button type="submit" class="btn btn-danger btn-sm" type="submit" <?= $_SESSION['user']['role'] == 'admin' ? '' : 'disabled' ?>>Delete</button>
                     <input type="hidden" name="id" value="<?= $post['id'] ?>">
