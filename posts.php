@@ -147,7 +147,7 @@ $postVotes = $stmt->fetch();
 <body>
   <div class="container cover-box mx-auto my-5">
     <div class="mt-3">
-      <a href="index.php" class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i></a>
+      <a href="index.php" class="btn btn-primary"><i class="bi bi-arrow-left-circle"></i></a>
     </div>
     <h1 class="h1 mb-4"><?= $posts['title'] ?></h1>
     <p class="fw-light d-inline">
