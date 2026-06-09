@@ -63,10 +63,6 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
       </div>
     </nav>
   </div>
-  <!-- the code below is a template logout -->
-  <?php /* ?>
- <h2><a href='./logout.php?logout=true' class="btn btn-danger<?= isset($_SESSION['user']) ? '' : ' d-none' ?>">Click me to logout</a></h2> 
-<?php */ ?>
 
   <div class="container mx-auto my-5" style="max-width: 500px;">
 
@@ -89,8 +85,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     <?php foreach ($posts as $post): ?>
       <div class="card mb-2">
         <div class="card-body">
-          <h5 class="card-title"><?= $post['title'] ?></h5>
-          <p class="card-text"><?= $post['content'] ?></p>
+          <h5 class="card-title text-capitalize"><?= $post['title'] ?></h5>
           <p class="card-text"><?= $post['post_date'] ?></p>
           <p class="card-text"><?= $post['post_by'] ?></p>
           <div class="text-end">
