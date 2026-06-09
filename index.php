@@ -113,7 +113,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
           <i class="bi bi-facebook text-white px-2"></i>
           <i class="bi bi-twitter text-white px-2"></i>
           <i class="bi bi-instagram text-white px-2"></i>
-          <i class="bi bi-linkedin text-white px-2"></i>
+          <a href="https://github.com/BillnDoss/php-mysql-project" target="_blank"><i class="bi bi bi-github text-white px-2"></i></a>
         </div>
         <p class="text-white text-center">&copy; 2026 JTTY. All rights reserved.</p>
       </div>

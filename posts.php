@@ -145,6 +145,33 @@ $postVotes = $stmt->fetch();
 </head>
 
 <body>
+  <div class="container-fluid bg-dark navbar-dark">
+    <nav class="navbar navbar-expand-lg pt-0">
+      <div class="container navbar-dark">
+        <a href="index.php" class="navbar-brand">Discussion Forum</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item active">
+              <a href="login-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Login</a>
+            </li>
+            <li class="nav-item">
+              <a href="register-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Sign Up</a>
+            </li>
+            <li class="nav-item">
+              <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>"><i class="bi bi-menu-button"></i>Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a href="./logout.php?logout=true" class="nav-link<?= isset($_SESSION['user']) ? '' : ' d-none' ?>"><i class="bi bi-box-arrow-left"></i>Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
   <div class="container cover-box mx-auto my-5">
     <div class="mt-3">
       <a href="index.php" class="btn btn-primary"><i class="bi bi-arrow-left-circle"></i></a>
@@ -226,21 +253,20 @@ $postVotes = $stmt->fetch();
             <input type="hidden" name="vote_direction" value="-1">
             <button class="btn btn-sm btn-outline-danger"><i class="bi bi-arrow-up"></i></button>
           </form>
-
+          <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'] || $adminPerm)) : ?>
+            <div class="buttons d-flex align-items-center">
+              <a
+                href="manage-comments-edit.php?id=<?= $comment['id'] ?>"
+                class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
+              <form method="post">
+                <input type="hidden" name="comments_id" value="<?= $comment['id'] ?>">
+                <button class="btn btn-danger btn-sm" type="submit" value="<?= $comment['id'] ?>"><i class="bi bi-trash"></i></button>
+              </form>
+            </div>
         </div>
-        <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'] || $adminPerm)) : ?>
-          <div class="buttons d-flex align-items-center">
-            <a
-              href="manage-comments-edit.php?id=<?= $comment['id'] ?>"
-              class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
-            <form method="post">
-              <input type="hidden" name="comments_id" value="<?= $comment['id'] ?>">
-              <button class="btn btn-danger btn-sm" type="submit" value="<?= $comment['id'] ?>"><i class="bi bi-trash"></i></button>
-            </form>
-          </div>
+      <?php endif; ?>
       </div>
-    <?php endif; ?>
-  <?php endforeach; ?>
+    <?php endforeach; ?>
     </div>
     <div class="text-center">
       <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm m-3"> Add new Comment</a>
@@ -258,7 +284,7 @@ $postVotes = $stmt->fetch();
             <i class="bi bi-facebook text-white px-2"></i>
             <i class="bi bi-twitter text-white px-2"></i>
             <i class="bi bi-instagram text-white px-2"></i>
-            <i class="bi bi-linkedin text-white px-2"></i>
+            <a href="https://github.com/BillnDoss/php-mysql-project" target="_blank"><i class="bi bi bi-github text-white px-2"></i></a>
           </div>
           <p class="text-white text-center">&copy; 2026 JTTY. All rights reserved.</p>
         </div>
