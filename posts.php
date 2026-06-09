@@ -97,7 +97,7 @@ if (isset($_POST['vote_direction']) && $posterid) {
   }
 
   // Test Comment Query Later
-  if ($commentId) {
+  if ($commentId && !$postId) {
     $checkVoteComments = "SELECT id, direction FROM votes WHERE for_comment = :comment AND by_user = :user";
     $stmt = $db->prepare($checkVoteComments);
 
@@ -105,6 +105,32 @@ if (isset($_POST['vote_direction']) && $posterid) {
       ':comment' => $commentId,
       ':user' => $posterid
     ]);
+
+    $voteExist = $stmt->fetch();
+
+    if ($voteExist) {
+      if ($voteExist['direction'] == $directionVoted) {
+        $stmt = $db->prepare("DELETE FROM votes WHERE id = :id");
+        $stmt->execute([':id' => $voteExist['id']]);
+      } else {
+        $stmt = $db->prepare("UPDATE votes SET direction = :direction WHERE id = :id");
+        $stmt->execute([
+          ':direction' => $directionVoted,
+          ':id' => $voteExist['id']
+        ]);
+      }
+    } else {
+      $stmt = $db->prepare("
+      INSERT INTO votes (direction, for_post, for_comment, by_user)
+      VALUES (:direction, NULL, :comment, :user)
+    ");
+
+      $stmt->execute([
+        ':direction' => $directionVoted,
+        ':comment' => $commentId,
+        ':user' => $posterid
+      ]);
+    }
   }
   header("Location: posts.php?id=" . $_GET['id']);
 }
@@ -115,6 +141,17 @@ $stmt = $db->prepare($showVotesPosts);
 $stmt->execute([':id' => $id]);
 $postVotes = $stmt->fetch();
 
+$showVotesComments = "SELECT for_comment, SUM(CASE WHEN direction = 1 THEN 1 ELSE 0 END) AS upvotes, SUM(CASE WHEN direction = -1 THEN 1 ELSE 0 END) AS downvotes FROM votes WHERE for_comment IS NOT NULL GROUP BY for_comment";
+$stmt = $db->prepare($showVotesComments);
+$stmt->execute();
+
+$CommentsVotesTotal = [];
+foreach ($stmt->fetchAll() as $row) {
+  $CommentsVotesTotal[$row['for_comment']] = [
+    'upvotes' => $row['upvotes'],
+    'downvotes' => $row['downvotes']
+  ];
+}
 $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 ?>
 
@@ -181,13 +218,16 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     <p class="fw-light d-inline">
       <?= $posts['post_date'] ?>
     </p>
+    <!-- condition for seeing the edit button cant be put above the delete button because the closing div is unconditional so it makes the post escape -->
     <?php if ($posterid && $posterid == $posts['post_by'] || $adminPerm) : ?>
       <div class="buttons d-flex align-items-center justify-content-end">
-        <a
-          href="manage-posts-edit.php?id=<?= $posts['id'] ?>"
-          class="btn btn-success btn-sm me-2">
-          <i class="bi bi-pencil"></i>
-        </a>
+        <?php if ($posterid && $posterid == $posts['post_by']) : ?>
+          <a
+            href="manage-posts-edit.php?id=<?= $posts['id'] ?>"
+            class="btn btn-success btn-sm me-2">
+            <i class="bi bi-pencil"></i>
+          </a>
+        <?php endif; ?>
 
         <form method="post">
           <input type="hidden" name="posts_id" value="<?= $posts['id'] ?>">
@@ -238,40 +278,44 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
         <p>
           <?= $comment['content'] ?>
         </p>
-        <!-- COMMENT VOTE -->
         <div class="d-flex align-items-center gap-2">
 
           <form method="post">
             <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
             <input type="hidden" name="vote_direction" value="1">
-            <button class="btn btn-sm btn-outline-success"><i class="bi bi-arrow-up"></i></button>
+            <button class="btn btn-sm btn-success"><i class="bi bi-arrow-up"></i></button>
           </form>
 
-          <strong><?= $commentScores[$comment['id']] ?? 0 ?></strong>
+          <p class="mb-0 fw-bold">
+            <?= $CommentsVotesTotal[$comment['id']]['upvotes'] ?? 0 ?>
+            |
+            <?= $CommentsVotesTotal[$comment['id']]['downvotes'] ?? 0 ?>
+          </p>
 
           <form method="post">
             <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
             <input type="hidden" name="vote_direction" value="-1">
-            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-arrow-up"></i></button>
+            <button class="btn btn-danger btn-sm"><i class="bi bi-arrow-down"></i></button>
           </form>
           <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'] || $adminPerm)) : ?>
             <div class="buttons d-flex align-items-center">
-              <a
-                href="manage-comments-edit.php?id=<?= $comment['id'] ?>"
-                class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
+              <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'])) : ?>
+                <a
+                  href="manage-comments-edit.php?id=<?= $comment['id'] ?>"
+                  class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
+              <?php endif; ?>
               <form method="post">
                 <input type="hidden" name="comments_id" value="<?= $comment['id'] ?>">
                 <button class="btn btn-danger btn-sm" type="submit" value="<?= $comment['id'] ?>"><i class="bi bi-trash"></i></button>
               </form>
             </div>
+          <?php endif; ?>
         </div>
-      <?php endif; ?>
+      <?php endforeach; ?>
       </div>
-    <?php endforeach; ?>
-    </div>
-    <div class="text-center">
-      <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm m-3"> Add new Comment</a>
-    </div>
+      <div class="text-center">
+        <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm m-3"> Add new Comment</a>
+      </div>
     </div>
 
     <script
