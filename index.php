@@ -80,8 +80,6 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
   </div>
   <div class="container mx-auto my-5" style="max-width: 500px;">
-
-    <h1 class="h1 mb-4 text-center">All Posts</h1>
     <?php foreach ($posts as $post): ?>
       <div class="card mb-2">
         <div class="card-body">
