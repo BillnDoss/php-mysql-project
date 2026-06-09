@@ -10,7 +10,7 @@ if (isset($_POST['id'])) {
   $stmt->execute([":id" => $id]);
 }
 
-$query = "SELECT * FROM posts ORDER BY id";
+$query = "SELECT posts.id, posts.title, posts.content, posts.post_date, users.username AS post_by FROM posts LEFT JOIN users ON posts.post_by = users.id ORDER BY posts.id";
 
 $stmt = $db->prepare($query);
 $stmt->execute([]);
@@ -52,6 +52,7 @@ $posts = $stmt->fetchAll();
           <tr>
             <th scope="col">ID</th>
             <th scope="col" style="width: 40%;">Title</th>
+            <th scope="col"">Poster</th>
             <th scope="col" class="text-end">Actions</th>
           </tr>
         </thead>
@@ -60,18 +61,19 @@ $posts = $stmt->fetchAll();
             <tr>
               <th scope="row"><?= $post['id'] ?></th>
               <td><?= $post['title'] ?></td>
+              <td class="fw-bold"><?= $post['post_by'] ?></td>
 
               <td class="text-end">
                 <div class="buttons">
                   <a
                     href="posts.php?id=<?= $post['id'] ?>"
                     target="_blank"
-                    class="btn btn-primary btn-sm me-2"><i class="bi bi-eye"></i></a>
+                    class="btn btn-primary btn-sm me-2">View</a>
                   <a
                     href="manage-posts-edit.php?id=<?= $post['id'] ?>"
-                    class="btn btn-secondary btn-sm me-2 <?= $_SESSION['user']['role'] != 'user' ? '' : 'disabled' ?>"><i class="bi bi-pencil"></i></a>
+                    class="btn btn-secondary btn-sm me-2 <?= $_SESSION['user']['role'] != 'user' ? '' : 'disabled' ?>">Edit</a>
                   <form method="post" class="d-inline">
-                    <button type="submit" class="btn btn-danger btn-sm" type="submit" <?= $_SESSION['user']['role'] == 'admin' ? '' : 'disabled' ?>><i class="bi bi-trash"></i></button>
+                    <button type="submit" class="btn btn-danger btn-sm" type="submit" <?= $_SESSION['user']['role'] == 'admin' ? '' : 'disabled' ?>>Delete</button>
                     <input type="hidden" name="id" value="<?= $post['id'] ?>">
                   </form>
                 </div>
