@@ -53,10 +53,10 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
               <a href="register-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Sign Up</a>
             </li>
             <li class="nav-item">
-              <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>">Dashboard</a>
+              <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>"><i class="bi bi-menu-button"></i>Dashboard</a>
             </li>
             <li class="nav-item">
-              <a href="./logout.php?logout=true" class="nav-link<?= isset($_SESSION['user']) ? '' : ' d-none' ?>">Logout</a>
+              <a href="./logout.php?logout=true" class="nav-link<?= isset($_SESSION['user']) ? '' : ' d-none' ?>"><i class="bi bi-box-arrow-left"></i>Logout</a>
             </li>
           </ul>
         </div>
