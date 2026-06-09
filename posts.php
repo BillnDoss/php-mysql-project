@@ -1,7 +1,7 @@
 <?php
 require("header.php");
 
-// variables for role and session validation
+// variables and arrays for role and session validation
 $user = $_SESSION['user'] ?? null;
 $posterid = $user['id'] ?? null;
 $adminPerm = ($user['role'] ?? null) === 'admin';
@@ -48,6 +48,72 @@ if (isset($_POST['posts_id'])) {
   exit;
 }
 
+// This entire section is for the voting system for Posts
+// the INT inside the Id's for both post and comment just ensures no funny ("") is added into the Id when using it
+if (isset($_POST['vote_direction']) && $posterid) {
+  $directionVoted = (int) $_POST['vote_direction'];
+  $postId = isset($_POST['for_post']) ? (int) $_POST['for_post'] : null;
+  $commentId = isset($_POST['for_comment']) ? (int) $_POST['for_comment'] : null;
+
+  // if there is a Post Id and the comment Id is null, the php will run
+  // checkVote query is checking if there is already a vote from the logged in user
+  // the statement execute is replacing values :post and :user with the actual session post and user.
+  if ($postId && !$commentId) {
+    $checkVotePosts = "SELECT id, direction FROM votes WHERE for_post = :post AND by_user = :user";
+    $stmt = $db->prepare($checkVotePosts);
+    $stmt->execute([
+      ':post' => $postId,
+      ':user' => $posterid
+    ]);
+    // if the user already HAS a vote it will fetch the specific vote from the votes table
+    // e.g. logged in as John Doe and upvoted post 1, data is stored inside table and specifically only fetches John Doe's data so it can be changed them if they want to change votes
+    $voteExist = $stmt->fetch();
+
+    // if the user already voted and presses it, it will toggle the vote (.e.g. user already has an upvote and presses it again the vote will toggle between upvote or removed)
+    if ($voteExist) {
+      if ($voteExist['direction'] == $directionVoted) {
+        $stmt = $db->prepare("DELETE FROM votes WHERE id = :id");
+        $stmt->execute([':id' => $voteExist['id']]);
+        // the first ELSE statement allows the user to change their votes between upvoting (like) or downvoting (dislike)
+        // e.g. John Doe already has upvote on post 1, it can changed with this query
+      } else {
+        $stmt = $db->prepare("UPDATE votes SET direction = :direction WHERE id = :id");
+        $stmt->execute([
+          ':direction' => $directionVoted,
+          ':id' => $voteExist['id']
+        ]);
+      }
+      // the 2nd ELSE statement runs when the user has no data from voting on the specified post
+      // e.g. Jane Doe has no vote data from the table so it is inserted with this query
+    } else {
+      $newPostVote = "INSERT INTO votes (direction, for_post, for_comment, by_user) VALUES (:direction, :post, NULL, :user)";
+      $stmt = $db->prepare($newPostVote);
+      $stmt->execute([
+        ':direction' => $directionVoted,
+        ':post' => $postId,
+        ':user' => $posterid
+      ]);
+    }
+  }
+
+  // Test Comment Query Later
+  if ($commentId) {
+    $checkVoteComments = "SELECT id, direction FROM votes WHERE for_comment = :comment AND by_user = :user";
+    $stmt = $db->prepare($checkVoteComments);
+
+    $stmt->execute([
+      ':comment' => $commentId,
+      ':user' => $posterid
+    ]);
+  }
+  header("Location: posts.php?id=" . $_GET['id']);
+}
+
+// $postVotes is variable used for showing data from the table inside the HTML php
+$showVotesPosts = "SELECT SUM(CASE WHEN direction = 1 THEN 1 ELSE 0 END) AS upvotes, SUM(CASE WHEN direction = -1 THEN 1 ELSE 0 END) AS downvotes FROM votes WHERE for_post = :id";
+$stmt = $db->prepare($showVotesPosts);
+$stmt->execute([':id' => $id]);
+$postVotes = $stmt->fetch();
 
 ?>
 
@@ -72,38 +138,16 @@ if (isset($_POST['posts_id'])) {
 </head>
 
 <body>
-
   <div class="container mx-auto my-5" style="max-width: 500px;">
+    <div class="mt-3">
+      <a href="index.php" class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i></a>
+    </div>
     <h1 class="h1 mb-4 text-center"><?= $posts['title'] ?></h1>
-    <p>
+    <p class="fw-light d-inline">
       <?= $posts['post_date'] ?>
     </p>
-    <p>
-      <?= $posts['username'] ?>
-    </p>
-    <p>
-      <?= $posts['content'] ?>
-    </p>
-    <!-- POST VOTES -->
-    <div class="d-flex align-items-center gap-2 mb-3">
-
-      <form method="post">
-        <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
-        <input type="hidden" name="vote_direction" value="1">
-        <button class="btn btn-outline-success btn-sm">⬆</button>
-      </form>
-
-      <p><?= $postScore ?? 0 ?></p>
-
-      <form method="post">
-        <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
-        <input type="hidden" name="vote_direction" value="-1">
-        <button class="btn btn-outline-danger btn-sm">⬇</button>
-      </form>
-
-    </div>
     <?php if ($posterid && $posterid == $posts['post_by'] || $adminPerm) : ?>
-      <div class="buttons d-flex align-items-center">
+      <div class="buttons d-flex align-items-center justify-content-end">
         <a
           href="manage-posts-edit.php?id=<?= $posts['id'] ?>"
           class="btn btn-success btn-sm me-2">
@@ -118,11 +162,41 @@ if (isset($_POST['posts_id'])) {
         </form>
       </div>
     <?php endif; ?>
+    <p class="fw-bold text-capitalize">
+      <?= $posts['username'] ?>
+    </p>
+    <p>
+      <?= $posts['content'] ?>
+    </p>
+    <div class="d-flex align-items-center gap-2 mb-3">
+
+      <!-- for_post hidden input is to check what which post it is giving the votes to -->
+      <!-- vote_direction hidden input is to make the TINYINT(boolean) value detect either true (1) or false (-1) -->
+      <form method="post">
+        <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
+        <input type="hidden" name="vote_direction" value="1">
+        <button class="btn btn-success btn-sm"><i class="bi bi-arrow-up"></i></button>
+      </form>
+
+      <p class="mb-0 fw-bold">
+        <?= $postVotes['upvotes'] ?? 0 ?>
+        |
+        <?= $postVotes['downvotes'] ?? 0 ?>
+      </p>
+
+      <form method="post">
+        <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
+        <input type="hidden" name="vote_direction" value="-1">
+        <button class="btn btn-danger btn-sm"><i class="bi bi-arrow-down"></i></button>
+      </form>
+
+    </div>
+
     <?php foreach ($comments as $comment): ?>
       <div class="card">
         <p class="d-flex justify-content-between">
-          <span><?= $comment['commenter'] ?></span>
-          <span><?= $comment['comment_date'] ?></span>
+          <span class="fw-bold text-capitalize"><?= $comment['commenter'] ?></span>
+          <span class="fw-light"><?= $comment['comment_date'] ?></span>
         </p>
         <p>
           <?= $comment['content'] ?>
@@ -133,7 +207,7 @@ if (isset($_POST['posts_id'])) {
           <form method="post">
             <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
             <input type="hidden" name="vote_direction" value="1">
-            <button class="btn btn-sm btn-outline-success">⬆</button>
+            <button class="btn btn-sm btn-outline-success"><i class="bi bi-arrow-up"></i></button>
           </form>
 
           <strong><?= $commentScores[$comment['id']] ?? 0 ?></strong>
@@ -141,7 +215,7 @@ if (isset($_POST['posts_id'])) {
           <form method="post">
             <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
             <input type="hidden" name="vote_direction" value="-1">
-            <button class="btn btn-sm btn-outline-danger">⬇</button>
+            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-arrow-up"></i></button>
           </form>
 
         </div>
@@ -162,9 +236,7 @@ if (isset($_POST['posts_id'])) {
   <div class="text-center">
     <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm"> Add new Comment</a>
   </div>
-  <div class="text-center mt-3">
-    <a href="index.php" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
-  </div>
+
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
