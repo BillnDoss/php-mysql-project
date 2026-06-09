@@ -87,7 +87,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
         <div class="card-body">
           <h5 class="card-title text-capitalize"><?= $post['title'] ?></h5>
           <p class="card-text"><?= $post['post_date'] ?></p>
-          <p class="card-text"><?= $post['post_by'] ?></p>
+          <p class="card-text fw-bold"><?= $post['post_by'] ?></p>
           <div class="text-end">
             <a href="posts.php?id=<?= $post['id'] ?>" class="btn btn-primary btn-sm">Read More</a>
           </div>

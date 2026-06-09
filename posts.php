@@ -134,15 +134,22 @@ $postVotes = $stmt->fetch();
     body {
       background: #f1f1f1;
     }
+
+    .cover-box {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 40px;
+      border-radius: 8px;
+      color: white;
+    }
   </style>
 </head>
 
 <body>
-  <div class="container mx-auto my-5" style="max-width: 500px;">
+  <div class="container cover-box mx-auto my-5">
     <div class="mt-3">
       <a href="index.php" class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i></a>
     </div>
-    <h1 class="h1 mb-4 text-center"><?= $posts['title'] ?></h1>
+    <h1 class="h1 mb-4"><?= $posts['title'] ?></h1>
     <p class="fw-light d-inline">
       <?= $posts['post_date'] ?>
     </p>
@@ -191,11 +198,13 @@ $postVotes = $stmt->fetch();
       </form>
 
     </div>
+  </div>
 
-    <?php foreach ($comments as $comment): ?>
-      <div class="card">
+  <?php foreach ($comments as $comment): ?>
+    <div class="container">
+      <div class="card comment-text-color">
         <p class="d-flex justify-content-between">
-          <span class="fw-bold text-capitalize"><?= $comment['commenter'] ?></span>
+          <span class="fw-bold text-capitalize mt-2"><?= $comment['commenter'] ?></span>
           <span class="fw-light"><?= $comment['comment_date'] ?></span>
         </p>
         <p>
@@ -232,15 +241,29 @@ $postVotes = $stmt->fetch();
       </div>
     <?php endif; ?>
   <?php endforeach; ?>
-  </div>
-  <div class="text-center">
-    <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm"> Add new Comment</a>
-  </div>
+    </div>
+    <div class="text-center">
+      <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm m-3"> Add new Comment</a>
+    </div>
+    </div>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-    crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"></script>
+    <footer>
+      <div class="container-fluid bg-dark py-4">
+        <div class="container text-center">
+          <div class="d-flex justify-content-center pb-2">
+            <i class="bi bi-facebook text-white px-2"></i>
+            <i class="bi bi-twitter text-white px-2"></i>
+            <i class="bi bi-instagram text-white px-2"></i>
+            <i class="bi bi-linkedin text-white px-2"></i>
+          </div>
+          <p class="text-white text-center">&copy; 2026 JTTY. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
 </body>
 
 </html>
