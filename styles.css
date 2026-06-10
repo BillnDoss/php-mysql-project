@@ -1,0 +1,43 @@
+    .nav-account {
+      position: relative;
+      display: inline-block
+    }
+
+    .navbar-collapse {
+      overflow: visible;
+    }
+
+    /* unset removes the default html button style */
+    .account-trigger {
+      all: unset;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .account-dropbox {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: .5rem;
+      min-width: 160px;
+      background: #fff;
+      border-radius: 4px;
+    }
+
+    .nav-account:hover .account-dropbox {
+      display: block;
+    }
+
+    .account-dropbox a {
+      display: block;
+      padding: 12px 16px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .account-dropbox a:hover {
+      background: #f1f5f9;
+    }
