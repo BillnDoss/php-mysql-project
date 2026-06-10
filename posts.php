@@ -141,6 +141,31 @@ $stmt = $db->prepare($showVotesPosts);
 $stmt->execute([':id' => $id]);
 $postVotes = $stmt->fetch();
 
+// This is for checking if the user has already upvoted/downvoted a specific post
+$userPostVote = null;
+
+if ($posterid) {
+  $postVoteView = "SELECT direction FROM votes WHERE for_post = :post AND by_user = :user";
+  $stmt = $db->prepare($postVoteView);
+  $stmt->execute([
+    ':post' => $id,
+    ':user' => $posterid
+  ]);
+  $userPostVote = $stmt->fetchColumn();
+}
+
+$userCommentVote = [];
+if ($posterid) {
+  $commentVoteView = "SELECT for_comment, direction FROM votes WHERE by_user = :user AND for_comment IS NOT NULL";
+  $stmt = $db->prepare($commentVoteView);
+  $stmt->execute([
+    ':user' => $posterid
+  ]);
+  foreach ($stmt->fetchAll() as $row) {
+    $userCommentVote[$row['for_comment']] = $row['direction'];
+  }
+}
+
 $showVotesComments = "SELECT for_comment, SUM(CASE WHEN direction = 1 THEN 1 ELSE 0 END) AS upvotes, SUM(CASE WHEN direction = -1 THEN 1 ELSE 0 END) AS downvotes FROM votes WHERE for_comment IS NOT NULL GROUP BY for_comment";
 $stmt = $db->prepare($showVotesComments);
 $stmt->execute();
@@ -168,6 +193,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="styles.css">
   <style type="text/css">
     body {
       background: #f1f1f1;
@@ -190,22 +216,35 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
+        <!-- This section is for navbar items being centered after logging in -->
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item active">
-              <a href="login-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Login</a>
-            </li>
-            <li class="nav-item">
-              <a href="register-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Sign Up</a>
-            </li>
-            <li class="nav-item">
-              <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>"><i class="bi bi-menu-button"></i>Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a href="./logout.php?logout=true" class="nav-link<?= isset($_SESSION['user']) ? '' : ' d-none' ?>"><i class="bi bi-box-arrow-left"></i>Logout</a>
-            </li>
-          </ul>
+          <?php if ($usersession) : ?>
+            <ul class="navbar-nav mx-auto">
+            </ul>
+          <?php endif; ?>
+          <!-- This section is for navbar items that remain at the right not logged in -->
+          <?php if (!$usersession) : ?>
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a href="login-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Login</a>
+              </li>
+              <li class="nav-item">
+                <a href="register-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Sign Up</a>
+              </li>
+            </ul>
+          <?php endif; ?>
+          <?php if ($usersession) : ?>
+            <div class="nav-account">
+              <button class="account-trigger" aria-haspopup="true">
+                <!-- the specialchars just makes the username act like text instead of code that needs to be read -->
+                <span><i class="bi bi-person-circle"></i></span> Welcome, <?= htmlspecialchars($_SESSION['user']['username']) ?> ▼
+              </button>
+              <div class="account-dropbox">
+                <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>"><i class="bi bi-menu-button"></i>Dashboard</a>
+                <a href="./logout.php?logout=true" class="nav-link <?= isset($_SESSION['user']) ? '' : ' d-none' ?>"><i class="bi bi-box-arrow-left"></i>Logout</a>
+              </div>
+            </div>
+          <?php endif; ?>
         </div>
       </div>
     </nav>
@@ -247,94 +286,114 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
       <!-- for_post hidden input is to check what which post it is giving the votes to -->
       <!-- vote_direction hidden input is to make the TINYINT(boolean) value detect either true (1) or false (-1) -->
-      <form method="post">
-        <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
-        <input type="hidden" name="vote_direction" value="1">
-        <button class="btn btn-success btn-sm"><i class="bi bi-arrow-up"></i></button>
-      </form>
+      <div class="votetip-box">
+        <form method="post">
+          <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
+          <input type="hidden" name="vote_direction" value="1">
+          <button class="btn btn-success btn-sm"><i class="bi bi-arrow-up"></i></button>
+        </form>
 
+        <div class="votetip-text">
+          <?= $userPostVote == 1 ? "You have already upvoted this" : "Upvote" ?>
+        </div>
+      </div>
       <p class="mb-0 fw-bold">
         <?= $postVotes['upvotes'] ?? 0 ?>
         |
         <?= $postVotes['downvotes'] ?? 0 ?>
       </p>
-
-      <form method="post">
-        <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
-        <input type="hidden" name="vote_direction" value="-1">
-        <button class="btn btn-danger btn-sm"><i class="bi bi-arrow-down"></i></button>
-      </form>
-
+      <div class="votetip-box">
+        <form method="post">
+          <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
+          <input type="hidden" name="vote_direction" value="-1">
+          <button class="btn btn-danger btn-sm"><i class="bi bi-arrow-down"></i></button>
+        </form>
+        <div class="votetip-text">
+          <?= $userPostVote == -1 ? "You have already downvoted this" : "Downvote" ?>
+        </div>
+      </div>
     </div>
   </div>
 
-  <?php foreach ($comments as $comment): ?>
-    <div class="container">
-      <div class="card comment-text-color">
+  <div class="container">
+    <?php foreach ($comments as $comment): ?>
+      <div class="card p-3 comment-text-color">
         <p class="d-flex justify-content-between">
-          <span class="fw-bold text-capitalize mt-2"><?= $comment['commenter'] ?></span>
+          <span class="fw-bold text-capitalize"><?= $comment['commenter'] ?></span>
           <span class="fw-light"><?= $comment['comment_date'] ?></span>
         </p>
-        <p>
+        <p class="mt-2">
           <?= $comment['content'] ?>
         </p>
-        <div class="d-flex align-items-center gap-2">
-
-          <form method="post">
-            <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
-            <input type="hidden" name="vote_direction" value="1">
-            <button class="btn btn-sm btn-success"><i class="bi bi-arrow-up"></i></button>
-          </form>
-
-          <p class="mb-0 fw-bold">
-            <?= $CommentsVotesTotal[$comment['id']]['upvotes'] ?? 0 ?>
-            |
-            <?= $CommentsVotesTotal[$comment['id']]['downvotes'] ?? 0 ?>
-          </p>
-
-          <form method="post">
-            <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
-            <input type="hidden" name="vote_direction" value="-1">
-            <button class="btn btn-danger btn-sm"><i class="bi bi-arrow-down"></i></button>
-          </form>
-          <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'] || $adminPerm)) : ?>
-            <div class="buttons d-flex align-items-center">
-              <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'])) : ?>
-                <a
-                  href="manage-comments-edit.php?id=<?= $comment['id'] ?>"
-                  class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
-              <?php endif; ?>
+        <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <div class="votetip-box">
               <form method="post">
-                <input type="hidden" name="comments_id" value="<?= $comment['id'] ?>">
-                <button class="btn btn-danger btn-sm" type="submit" value="<?= $comment['id'] ?>"><i class="bi bi-trash"></i></button>
+                <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
+                <input type="hidden" name="vote_direction" value="1">
+                <button class="btn btn-sm btn-success"><i class="bi bi-arrow-up"></i></button>
               </form>
             </div>
-          <?php endif; ?>
+
+            <div class="votetip-text">
+              <?= ($userCommentVote[$comment['id']] ?? 0) == 1 ? 'You already upvoted this' : "Upvote" ?>
+            </div>
+            <p class="mb-0 fw-bold">
+              <?= $CommentsVotesTotal[$comment['id']]['upvotes'] ?? 0 ?>
+              |
+              <?= $CommentsVotesTotal[$comment['id']]['downvotes'] ?? 0 ?>
+            </p>
+            <div class="votetip-box">
+              <form method="post">
+                <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
+                <input type="hidden" name="vote_direction" value="-1">
+                <button class="btn btn-danger btn-sm"><i class="bi bi-arrow-down"></i></button>
+              </form>
+            </div>
+            <div class="votetip-text">
+              <?= ($userCommentVote[$comment['id']] ?? 0) == -1 ? "You already downvoted this" : "Downvote" ?>
+            </div>
+          </div>
+          <div class="ms-auto d-flex align-items-center">
+            <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'] || $adminPerm)) : ?>
+              <div class="buttons d-flex align-items-center">
+                <?php if ($posterid && ($posterid == $comment['comment_by'] || $posterid == $posts['post_by'])) : ?>
+                  <a
+                    href="manage-comments-edit.php?id=<?= $comment['id'] ?>"
+                    class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
+                <?php endif; ?>
+                <form method="post">
+                  <input type="hidden" name="comments_id" value="<?= $comment['id'] ?>">
+                  <button class="btn btn-danger btn-sm" type="submit" value="<?= $comment['id'] ?>"><i class="bi bi-trash"></i></button>
+                </form>
+              </div>
+            <?php endif; ?>
+          </div>
         </div>
-      <?php endforeach; ?>
       </div>
-      <div class="text-center">
-        <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm m-3"> Add new Comment</a>
+    <?php endforeach; ?>
+    <div class="text-center">
+      <a href="manage-comments-add.php?id=<?= $posts['id'] ?>" class="btn btn-primary btn-sm m-3"> Add new Comment</a>
+    </div>
+  </div>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+  <footer>
+    <div class="container-fluid bg-dark py-4">
+      <div class="container text-center">
+        <div class="d-flex justify-content-center pb-2">
+          <i class="bi bi-facebook text-white px-2"></i>
+          <i class="bi bi-twitter text-white px-2"></i>
+          <i class="bi bi-instagram text-white px-2"></i>
+          <a href="https://github.com/BillnDoss/php-mysql-project" target="_blank"><i class="bi bi bi-github text-white px-2"></i></a>
+        </div>
+        <p class="text-white text-center">&copy; 2026 JTTY. All rights reserved.</p>
       </div>
     </div>
-
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-      crossorigin="anonymous"></script>
-    <footer>
-      <div class="container-fluid bg-dark py-4">
-        <div class="container text-center">
-          <div class="d-flex justify-content-center pb-2">
-            <i class="bi bi-facebook text-white px-2"></i>
-            <i class="bi bi-twitter text-white px-2"></i>
-            <i class="bi bi-instagram text-white px-2"></i>
-            <a href="https://github.com/BillnDoss/php-mysql-project" target="_blank"><i class="bi bi bi-github text-white px-2"></i></a>
-          </div>
-          <p class="text-white text-center">&copy; 2026 JTTY. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+  </footer>
 </body>
 
 </html>
