@@ -16,6 +16,8 @@ $stmt = $db->prepare($query);
 $stmt->execute([]);
 $users = $stmt->fetchAll();
 
+$usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
+
 ?>
 
 <!DOCTYPE html>
@@ -31,6 +33,7 @@ $users = $stmt->fetchAll();
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="styles.css">
   <style type="text/css">
     body {
       background: #f1f1f1;
@@ -39,6 +42,46 @@ $users = $stmt->fetchAll();
 </head>
 
 <body>
+  <div class="container-fluid bg-dark navbar-dark">
+    <nav class="navbar navbar-expand-lg pt-0">
+      <div class="container navbar-dark">
+        <a href="index.php" class="navbar-brand">Discussion Forum</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- This section is for navbar items being centered after logging in -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <?php if ($usersession) : ?>
+            <ul class="navbar-nav mx-auto">
+            </ul>
+          <?php endif; ?>
+          <!-- This section is for navbar items that remain at the right not logged in -->
+          <?php if (!$usersession) : ?>
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a href="login-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Login</a>
+              </li>
+              <li class="nav-item">
+                <a href="register-form.php" class="nav-link <?= isset($usersession) ? ' d-none' : '' ?>">Sign Up</a>
+              </li>
+            </ul>
+          <?php endif; ?>
+          <?php if ($usersession) : ?>
+            <div class="nav-account">
+              <button class="account-trigger" aria-haspopup="true">
+                <!-- the specialchars just makes the username act like text instead of code that needs to be read -->
+                <span><i class="bi bi-person-circle"></i></span> Welcome, <?= htmlspecialchars($_SESSION['user']['username']) ?> ▼
+              </button>
+              <div class="account-dropbox">
+                <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>"><i class="bi bi-menu-button"></i>Dashboard</a>
+                <a href="./logout.php?logout=true" class="nav-link <?= isset($_SESSION['user']) ? '' : ' d-none' ?>"><i class="bi bi-box-arrow-left"></i>Logout</a>
+              </div>
+            </div>
+          <?php endif; ?>
+        </div>
+      </div>
+    </nav>
+  </div>
   <div class="container mx-auto my-5" style="max-width: 700px;">
     <div class="d-flex justify-content-between align-items-center mb-2">
       <h1 class="h1">Manage Users</h1>
@@ -76,7 +119,7 @@ $users = $stmt->fetchAll();
               <td><?= $user['email'] ?></td>
               <td><span class="badge <?= $role_badge ?>"> <?= ucwords($user['role']) ?></span></td>
               <td class="text-end">
-                <div class="buttons d-flex align-items-center">
+                <div class="buttons d-flex justify-content-end align-items-center">
                   <a href="manage-users-edit.php?id=<?= $user['id'] ?>" class="btn btn-success btn-sm me-2"><i class="bi bi-pencil"></i></a>
                   <a href="manage-users-changepwd.php?id=<?= $user['id'] ?>" class="btn btn-warning btn-sm me-2"><i class="bi bi-key"></i></a>
                   <input type="hidden" name="id" value="<?= $user['id'] ?>">
