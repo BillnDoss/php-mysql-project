@@ -1,6 +1,7 @@
 <?php
 require('header.php');
 
+$id = $_GET['id'] ?? null;
 if (isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_POST['id'])) {
   $password = $_POST['password'];
   $confirm_password = $_POST['confirm_password'];
@@ -13,9 +14,15 @@ if (isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_PO
       ":password" => password_hash($password, PASSWORD_BCRYPT),
       ":id" => $id
     ]);
-    header("Location: manage-users.php");
-    exit;
-  }
+    }
+    
+    
+    if ($_SESSION['role'] === 'admin') {
+      header("Location: manage-users.php");
+} else {
+    header("Location: index.php");
+}
+exit;
 }
 ?>
 
@@ -52,7 +59,7 @@ if (isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_PO
               <label for="password" class="form-label">Password</label>
               <input type="password" class="form-control" id="password" name="password" required />
             </div>
-            <input type="hidden" name="id" value="<?= $id ?>">
+            <input type="hidden" name="id" value="<?= htmlspecialchars($id) ?>">
             <div class="col">
               <label for="confirm_password" class="form-label">Confirm Password</label>
               <input
