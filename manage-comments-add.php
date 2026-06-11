@@ -51,8 +51,6 @@ if (isset($_POST['content']) && isset($_GET['id'])) {
       <h1 class="h1">Add New Comment</h1>
     </div>
     <div class="card mb-2 p-4">
-      <!-- action to lead back to index in backend -->
-      <!-- action="http://localhost/cms/backend/index.php" -->
       <form method="POST">
         <input type="hidden" name="for_post" value="<?= $_GET['id'] ?>">
         <div class="mb-3">
