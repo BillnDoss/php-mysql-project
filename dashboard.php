@@ -115,7 +115,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     <a href="index.php" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
   </div>
   </div>
-
+  <!-- The main is here for a body content to ensure the footer stays below the page instead of a awkward position -->
   <main class="flex-grow-1">
     <div class="container mx-auto my-5" style="max-width: 800px;">
 
