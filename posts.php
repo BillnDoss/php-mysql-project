@@ -193,7 +193,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css">
   <style type="text/css">
     body {
       background: #f1f1f1;
@@ -241,6 +241,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
               </button>
               <div class="account-dropbox">
                 <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>"><i class="bi bi-menu-button"></i>Dashboard</a>
+                <a href="manage-users-changepwd.php?id=<?= $_SESSION['user']['id'] ?>" class="nav-link <?= isset($usersession) ? '' : 'd-none' ?>"><i class="bi bi-key"></i>Change Password</a>
                 <a href="./logout.php?logout=true" class="nav-link <?= isset($_SESSION['user']) ? '' : ' d-none' ?>"><i class="bi bi-box-arrow-left"></i>Logout</a>
               </div>
             </div>
@@ -293,8 +294,8 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
           <button class="btn btn-success btn-sm"><i class="bi bi-arrow-up"></i></button>
         </form>
 
-        <div class="votetip-text">
-          <?= $userPostVote == 1 ? "You have already upvoted this" : "Upvote" ?>
+        <div class="fs-3">
+          <?= $userPostVote == 1 ? '<i class="bi bi-arrow-up-square-fill"></i>' : '<i class="bi bi-arrow-up-square"></i>' ?>
         </div>
       </div>
       <p class="mb-0 fw-bold">
@@ -308,8 +309,8 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
           <input type="hidden" name="vote_direction" value="-1">
           <button class="btn btn-danger btn-sm"><i class="bi bi-arrow-down"></i></button>
         </form>
-        <div class="votetip-text">
-          <?= $userPostVote == -1 ? "You have already downvoted this" : "Downvote" ?>
+        <div class="fs-3">
+          <?= $userPostVote == -1 ? '<i class="bi bi-arrow-down-square-fill"></i>' : '<i class="bi bi-arrow-down-square"></i>' ?>
         </div>
       </div>
     </div>
@@ -335,8 +336,8 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
               </form>
             </div>
 
-            <div class="votetip-text">
-              <?= ($userCommentVote[$comment['id']] ?? 0) == 1 ? 'You already upvoted this' : "Upvote" ?>
+            <div class="fs-3">
+              <?= ($userCommentVote[$comment['id']] ?? 0) == 1 ? '<i class="bi bi-arrow-up-square-fill"></i>' : '<i class="bi bi-arrow-up-square"></i>' ?>
             </div>
             <p class="mb-0 fw-bold">
               <?= $CommentsVotesTotal[$comment['id']]['upvotes'] ?? 0 ?>
@@ -350,8 +351,8 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
                 <button class="btn btn-danger btn-sm"><i class="bi bi-arrow-down"></i></button>
               </form>
             </div>
-            <div class="votetip-text">
-              <?= ($userCommentVote[$comment['id']] ?? 0) == -1 ? "You already downvoted this" : "Downvote" ?>
+            <div class="fs-3">
+              <?= ($userCommentVote[$comment['id']] ?? 0) == -1 ? '<i class="bi bi-arrow-down-square-fill"></i>' : '<i class="bi bi-arrow-down-square"></i>' ?>
             </div>
           </div>
           <div class="ms-auto d-flex align-items-center">
