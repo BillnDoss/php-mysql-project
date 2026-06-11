@@ -9,6 +9,7 @@ $stmt = $db->prepare($query);
 $stmt->execute([]);
 $posts = $stmt->fetchAll();
 
+// this can be used for any undefined user variables since the data is already being stored in here
 $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 // The button giving error was because the page was trying to find a user session that doesn't exist hence giving a unknwon array error
 // Solution was adding a variable with a isset session for user 
@@ -77,7 +78,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
               </button>
               <div class="account-dropbox">
                 <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>"><i class="bi bi-menu-button"></i>Dashboard</a>
-                <a href="manage-users-changepwd.php" class="nav-link <?= isset($usersession) ? '' : 'd-none' ?>"><i class="bi bi-key"></i>Change Password</a>
+                <a href="manage-users-changepwd.php?id=<?= $_SESSION['user']['id'] ?>" class="nav-link <?= isset($usersession) ? '' : 'd-none' ?>"><i class="bi bi-key"></i>Change Password</a>
                 <a href="./logout.php?logout=true" class="nav-link <?= isset($_SESSION['user']) ? '' : ' d-none' ?>"><i class="bi bi-box-arrow-left"></i>Logout</a>
               </div>
             </div>
