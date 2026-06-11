@@ -5,10 +5,6 @@ $usersession = $_SESSION['user'] ?? null;
 $role = $usersession['role'] ?? null;
 $posterid = $usersession['id'] ?? null;
 
-if(!$usersession) {
-  header("Location: index.php");
-  exit;
-}
 
 $query = "INSERT INTO posts (title, content, post_by, post_date) VALUES (:title, :content, :post_by, :post_date)";
 $date_posted = date('Y-m-d H:i:s');
@@ -78,8 +74,8 @@ if (isset($_POST['title']) && isset($_POST['content'])) {
       </form>
     </div>
     <div class="text-center">
-      <a href="manage-posts.php" class="btn btn-link btn-sm <?= ($role !== 'admin') ? ' d-none' : '' ?>"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
-      <a href="index.php" class="btn btn-link btn-sm <?= (!$usersession) ? ' d-none' : '' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts</a>
+      <a href="manage-posts.php" class="btn btn-link btn-sm <?= ($role === 'admin') ? '' : 'd-none' ?>"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+      <a href="index.php" class="btn btn-link btn-sm <?= ($role !== 'admin') ? '' : 'd-none' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts</a>
     </div>
   </div>
   <script
