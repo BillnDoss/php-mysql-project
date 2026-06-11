@@ -184,7 +184,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 <html>
 
 <head>
-  <title>Placeholder Post View</title>
+  <title>Post View</title>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
