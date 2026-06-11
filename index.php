@@ -53,7 +53,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- This section is for navbar items being centered after logging in -->
+        <!-- This section is for navbar items being centered after logging in (may only use it as a way to position account navbar) -->
         <div class="collapse navbar-collapse" id="navbarNav">
           <?php if ($usersession) : ?>
             <ul class="navbar-nav mx-auto">
@@ -74,6 +74,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
             <div class="nav-account">
               <button class="account-trigger" aria-haspopup="true">
                 <!-- the specialchars just makes the username act like text instead of code that needs to be read -->
+                <!-- find a way to refresh session so the displayed name after editing shows the current sessions name instead of previous one -->
                 <span><i class="bi bi-person-circle"></i></span> Welcome, <?= htmlspecialchars($_SESSION['user']['username']) ?> ▼
               </button>
               <div class="account-dropbox">
@@ -89,6 +90,8 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     </nav>
   </div>
 
+
+  <!-- This displays only if the user isn't logged in -->
   <div class="container mx-auto my-5" style="max-width: 500px;">
 
     <?php if (!isset($_SESSION['user'])): ?>
