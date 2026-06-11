@@ -287,7 +287,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
       <!-- for_post hidden input is to check what which post it is giving the votes to -->
       <!-- vote_direction hidden input is to make the TINYINT(boolean) value detect either true (1) or false (-1) -->
-      <div class="votetip-box">
+      <div name=votetip-box">
         <form method="post">
           <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
           <input type="hidden" name="vote_direction" value="1">
@@ -303,7 +303,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
         |
         <?= $postVotes['downvotes'] ?? 0 ?>
       </p>
-      <div class="votetip-box">
+      <div name="votetip-box">
         <form method="post">
           <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
           <input type="hidden" name="vote_direction" value="-1">
@@ -328,7 +328,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
         </p>
         <div class="d-flex align-items-center">
           <div class="d-flex align-items-center gap-2">
-            <div class="votetip-box">
+            <div name="votetip-box">
               <form method="post">
                 <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
                 <input type="hidden" name="vote_direction" value="1">
@@ -344,7 +344,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
               |
               <?= $CommentsVotesTotal[$comment['id']]['downvotes'] ?? 0 ?>
             </p>
-            <div class="votetip-box">
+            <div name="votetip-box">
               <form method="post">
                 <input type="hidden" name="for_comment" value="<?= $comment['id'] ?>">
                 <input type="hidden" name="vote_direction" value="-1">
