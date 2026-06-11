@@ -1,6 +1,9 @@
 <?php
 require('header.php');
 
+$usersession = $_SESSION['user'] ?? null;
+$role = $usersession['role'] ?? null;
+
 $id = $_GET['id'] ?? null;
 if (isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_POST['id'])) {
   $password = $_POST['password'];
@@ -78,7 +81,8 @@ if (isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_PO
       </form>
     </div>
     <div class="text-center">
-      <a href="manage-users.php" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back to Users</a>
+      <a href="manage-users.php" class="btn btn-link btn-sm <?= ($role === 'admin') ? '' : 'd-none' ?>"><i class="bi bi-arrow-left"></i> Back to Users</a>
+      <a href="index.php" class="btn btn-link btn-sm <?= ($role !== 'admin') ? '' : 'd-none' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts Page</a>
     </div>
   </div>
 
