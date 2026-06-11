@@ -1,5 +1,4 @@
 <?php
-// Find out why its giving the incorrect double value issue when attempting to change password
 require('header.php');
 
 if (isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_POST['id'])) {

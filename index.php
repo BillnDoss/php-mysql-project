@@ -28,7 +28,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css">
   <style type="text/css">
     /* body and footer styling to fix footer not being positioned to the bottom of the page */
     body {
@@ -77,6 +77,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
               </button>
               <div class="account-dropbox">
                 <a href="dashboard.php" class="nav-link <?= isset($usersession) && $_SESSION['user']['role'] === 'admin' ? '' : 'd-none' ?>"><i class="bi bi-menu-button"></i>Dashboard</a>
+                <a href="manage-users-changepwd.php" class="nav-link <?= isset($usersession) ? '' : 'd-none' ?>"><i class="bi bi-key"></i>Change Password</a>
                 <a href="./logout.php?logout=true" class="nav-link <?= isset($_SESSION['user']) ? '' : ' d-none' ?>"><i class="bi bi-box-arrow-left"></i>Logout</a>
               </div>
             </div>
