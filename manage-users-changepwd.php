@@ -14,15 +14,14 @@ if (isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_PO
       ":password" => password_hash($password, PASSWORD_BCRYPT),
       ":id" => $id
     ]);
-    }
-    
-    
-    if ($_SESSION['role'] === 'admin') {
-      header("Location: manage-users.php");
-} else {
+  }
+
+  if ($_SESSION['role'] === 'admin') {
+    header("Location: manage-users.php");
+  } else {
     header("Location: index.php");
-}
-exit;
+  }
+  exit;
 }
 ?>
 
