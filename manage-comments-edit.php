@@ -1,6 +1,10 @@
 <?php
 require('header.php');
 
+// The null's here just tell the page to shush when it can't find anything related to these
+$comment = null;
+$post_id = null;
+
 if (isset($_GET['id'])) {
   $id = $_GET['id'];
 
@@ -10,11 +14,16 @@ if (isset($_GET['id'])) {
     ':id' => $id
   ]);
   $comment = $stmt->fetch();
+
+  if ($comment) {
+    $post_id = $comment['for_post'];
+  }
 }
 
-if (isset($_POST['content']) && isset($_POST['id'])) {
+if (isset($_POST['content']) && isset($_POST['id']) && isset($_POST['post_id'])) {
   $content = $_POST['content'];
   $id = $_POST['id'];
+  $post_id = $_POST['post_id'];
 
   $query = "UPDATE comments SET content=:content WHERE id=:id";
   $stmt = $db->prepare($query);
@@ -22,7 +31,7 @@ if (isset($_POST['content']) && isset($_POST['id'])) {
     ":content" => $content,
     ":id" => $id
   ]);
-  header("Location: posts.php?id=" . $_GET['id']);
+  header("Location: posts.php?id=" . $post_id);
   exit;
 }
 ?>
@@ -53,20 +62,21 @@ if (isset($_POST['content']) && isset($_POST['id'])) {
       <h1 class="h1">Edit Comment</h1>
     </div>
     <div class="card mb-2 p-4">
-      <form method="POST"">
-            <div class=" mb-3">
-        <label for="content" class="form-label">Content</label>
-        <textarea class="form-control" id="content" rows="10" name="content"><?= $comment["content"] ?></textarea>
+      <form method="POST">
+        <div class=" mb-3">
+          <label for="content" class="form-label">Content</label>
+          <textarea class="form-control" id="content" rows="10" name="content"><?= $comment["content"] ?></textarea>
+        </div>
+        <input type="hidden" name="id" value="<?= $comment['id'] ?>">
+        <input type="hidden" name="post_id" value="<?= $post_id ?>">
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
     </div>
-    <input type="hidden" name="id" value="<?= $id ?>">
-    <div class="text-end">
-      <button type="submit" class="btn btn-primary">Update</button>
+    <div class="text-center">
+      <a href="posts.php?id=<?= $post_id ?>" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back to Posts</a>
     </div>
-    </form>
-  </div>
-  <div class="text-center">
-    <a href="posts.php?id=<?= $_GET['id'] ?>" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back to Posts</a>
-  </div>
   </div>
 
   <script
