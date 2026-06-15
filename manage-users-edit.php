@@ -44,7 +44,7 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['id']) &
 <html>
 
 <head>
-  <title>Simple CMS</title>
+  <title>Edit Profile</title>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -61,10 +61,12 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['id']) &
 </head>
 
 <body>
-  <div class="container mx-auto my-5" style="max-width: 700px;">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h1 class="h1">Edit User</h1>
+  <div class="bg-primary text-white mb-4 shadow-sm">
+    <div class="container py-4" style="max-width: 700px;">
+      <h1 class="text-center"><i class="bi bi-people-fill fs-1"></i> Edit User</h1>
     </div>
+  </div>
+  <div class="container mx-auto my-5" style="max-width: 700px;">
     <div class="card mb-2 p-4">
       <form method="POST" id="changeUserForm">
         <div class="mb-3">
@@ -96,8 +98,8 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['id']) &
       </form>
     </div>
     <div class="text-center">
-      <a href="manage-users.php" class="btn btn-link btn-sm <?= ($role === 'admin') ? '' : 'd-none' ?>"><i class="bi bi-arrow-left"></i> Back to Users</a>
-      <a href="index.php" class="btn btn-link btn-sm <?= ($role !== 'admin') ? '' : 'd-none' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts Page</a>
+      <a href="manage-users.php" class="btn btn-primary <?= ($role === 'admin') ? '' : 'd-none' ?>"><i class="bi bi-arrow-left"></i> Back to Users</a>
+      <a href="index.php" class="btn btn-primary <?= ($role !== 'admin') ? '' : 'd-none' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts Page</a>
     </div>
   </div>
 

@@ -14,14 +14,37 @@
   <style type="text/css">
     body {
       background: #f1f1f1;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .auth-card {
+      border: 0;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+    }
+
+    .auth-header {
+      background: linear-gradient(135deg, #0d6efd, #0a58ca);
+      color: white;
+      padding: 20px;
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
-  <div class="container my-5 mx-auto" style="max-width: 500px;">
-    <h1 class="h1 mb-4 text-center d-inline"> <a href="index.php" class="btn btn-primary"><i class="bi bi-arrow-left-circle"></i></a> Sign Up a New Account</h1> 
+  <div class="card auth-card">
 
+    <div class="auth-header">
+      <h1 class="h4 mb-1">Create Account</h1>
+      <p class="mb-0 opacity-75">Sign up to get started</p>
+    </div>
     <div class="card p-4">
       <form method="POST" action="registration.php">
         <div class="mb-3">
@@ -61,8 +84,8 @@
     <!-- links -->
     <div
       class="d-flex justify-content-between align-items-center gap-3 mx-auto pt-3">
-      <a href="login-form.php" class="text-decoration-none small">Already have an account? Login here
-        <i class="bi bi-arrow-right-circle"></i></a>
+      <a href="index.php" class="text-decoration-none"><i class="bi bi-arrow-left-circle"></i> Go back</a>
+      <a href="login-form.php" class="text-decoration-none">Login here <i class="bi bi-arrow-right-circle"></i></a>
     </div>
   </div>
 

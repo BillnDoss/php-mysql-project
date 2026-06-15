@@ -45,44 +45,47 @@ if (isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_PO
     body {
       background: #f1f1f1;
     }
+
+    .pwd-header {
+      background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      color: white;
+    }
   </style>
 </head>
 
 <body>
   <div class="container mx-auto my-5" style="max-width: 700px;">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h1 class="h1">Change Password</h1>
-    </div>
-    <div class="card mb-2 p-4">
-      <form method="POST" id="changePwdForm">
-        <div class="mb-3">
-          <div class="row">
-            <div class="col">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="password" name="password" required />
-            </div>
-            <input type="hidden" name="id" value="<?= htmlspecialchars($id) ?>">
-            <div class="col">
-              <label for="confirm_password" class="form-label">Confirm Password</label>
-              <input
-                type="password"
-                class="form-control"
-                id="confirm_password"
-                name="confirm_password"
-                required />
-            </div>
+    <div class="card shadow-lg">
+      <div class="pwd-header p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="mb-1"><i class="bi bi-key me-2"></i> Change Password</h1>
           </div>
         </div>
-        <div class="d-grid">
-          <button type="submit" class="btn btn-primary">
-            Change Password
-          </button>
-        </div>
-      </form>
+      </div>
+</div>
+      <div class="card mb-2 p-4">
+        <form method="POST" id="changePwdForm">
+          <div class="mb-3">
+
+            <div class="mb-3">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-control form-control-lg" name="password" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" class="form-control form-control-lg" name="confirm_password" required>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary"> Change Password</button>
+            </div>
+        </form>
+      </div>
     </div>
     <div class="text-center">
-      <a href="manage-users.php" class="btn btn-link btn-sm <?= ($role === 'admin') ? '' : 'd-none' ?>"><i class="bi bi-arrow-left"></i> Back to Users</a>
-      <a href="index.php" class="btn btn-link btn-sm <?= ($role !== 'admin') ? '' : 'd-none' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts Page</a>
+      <a href="manage-users.php" class="btn btn-primary mt-3<?= ($role === 'admin') ? '' : 'd-none' ?>"><i class="bi bi-arrow-left"></i> Back to Users</a>
+      <a href="index.php" class="btn btn-primary mt-3 <?= ($role !== 'admin') ? '' : 'd-none' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts Page</a>
     </div>
   </div>
 

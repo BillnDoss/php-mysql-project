@@ -254,10 +254,14 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     <div class="mt-3">
       <a href="index.php" class="btn btn-primary"><i class="bi bi-arrow-left-circle"></i></a>
     </div>
-    <h1 class="h1 mb-4"><?= $posts['title'] ?></h1>
-    <p class="fw-light d-inline">
-      <?= $posts['post_date'] ?>
-    </p>
+    <h2 class="fw-bold"><?= htmlspecialchars($posts['title']) ?></h2>
+
+    <div class="mb-2">
+      Posted by <strong class="text-capitalize"><?= htmlspecialchars($posts['username']) ?></strong>
+      • <?= $posts['post_date'] ?>
+    </div>
+
+    <p class="mb-4"><?= nl2br(htmlspecialchars($posts['content'])) ?></p>
     <!-- condition for seeing the edit button cant be put above the delete button because the closing div is unconditional so it makes the post escape -->
     <?php if ($posterid && $posterid == $posts['post_by'] || $adminPerm) : ?>
       <div class="buttons d-flex align-items-center justify-content-end">
@@ -277,17 +281,11 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
         </form>
       </div>
     <?php endif; ?>
-    <p class="fw-bold text-capitalize">
-      <?= $posts['username'] ?>
-    </p>
-    <p>
-      <?= $posts['content'] ?>
-    </p>
     <div class="d-flex align-items-center gap-2 mb-3">
 
       <!-- for_post hidden input is to check what which post it is giving the votes to -->
       <!-- vote_direction hidden input is to make the TINYINT(boolean) value detect either true (1) or false (-1) -->
-      <div name=votetip-box">
+      <div class="d-flex flex-column align-items-center">
         <form method="post">
           <input type="hidden" name="for_post" value="<?= $posts['id'] ?>">
           <input type="hidden" name="vote_direction" value="1">

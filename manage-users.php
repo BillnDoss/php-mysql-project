@@ -38,6 +38,11 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     body {
       background: #f1f1f1;
     }
+
+    .card {
+      border: 0;
+      border-radius: 12px;
+    }
   </style>
 </head>
 
@@ -85,9 +90,14 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
   </div>
   <div class="container mx-auto my-5" style="max-width: 700px;">
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <h1 class="h1">Manage Users</h1>
+      <div>
+        <h1 class="h1">Manage Users</h1>
+        <h2 class="h5 mb-0">User List</h2>
+        <p class="fs-4 text-muted"><?= count($users) ?> active users</p>
+      </div>
+
       <div class="text-end">
-        <a href="manage-users-add.php" class="btn btn-primary btn-sm">Add New User</a>
+        <a href="manage-users-add.php" class="btn btn-primary btn-sm"> <i class="bi bi-person-plus"></i> Add New User</a>
       </div>
     </div>
     <div class="card mb-2 p-4">
@@ -136,7 +146,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
       </table>
     </div>
     <div class="text-center">
-      <a href="dashboard.php" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+      <a href="dashboard.php" class="btn btn-primary mt-2"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
     </div>
   </div>
 
