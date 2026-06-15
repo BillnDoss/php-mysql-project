@@ -32,7 +32,5 @@ if (isset($_POST['username'])) {
             header("Location: index.php");
         }
         exit;
-    } else {
-       echo $is_password_match ? "<h1>Correct password!</h1>" : "<h1>Wrong password!</h1>";
     }
 }
