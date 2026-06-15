@@ -143,7 +143,7 @@ $postVotes = $stmt->fetch();
 
 // This is for checking if the user has already upvoted/downvoted a specific post
 $userPostVote = null;
-
+//shows upvote/downvote column data from votes table with the userid of who voted it
 if ($posterid) {
   $postVoteView = "SELECT direction FROM votes WHERE for_post = :post AND by_user = :user";
   $stmt = $db->prepare($postVoteView);
