@@ -24,7 +24,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 <html>
 
 <head>
-  <title>Simple CMS</title>
+  <title>Manage Posts</title>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -38,6 +38,25 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     body {
       background: #f1f1f1;
     }
+
+    .page-card {
+      border: none;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      color: white;
+    }
+
+    .stat-card {
+      border: none;
+      border-radius: 16px;
+    }
+
+
+
   </style>
 </head>
 
@@ -83,14 +102,34 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
       </div>
     </nav>
   </div>
-  <div class="container mx-auto my-5" style="max-width: 700px;">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h1 class="h1">Manage Posts</h1>
+  <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h1"><i class="bi bi-file-earmark-text text-primary"></i> Manage Posts</h1>
       <div class="text-end">
-        <a href="manage-posts-add.php" class="btn btn-primary btn-sm">Add New Post</a>
+        <a href="manage-posts-add.php" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Add New Post</a>
       </div>
     </div>
-    <div class="card mb-2 p-4">
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+        <div class="card stat-card shadow-sm">
+          <div class="card-body">
+            <h6 class="text-muted mb-1">
+              Total Posts
+            </h6>
+
+            <h2 class="mb-0">
+              <?= count($posts) ?>
+            </h2>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="card page-card shadow-lg">
+      <div class="card-header page-header py-3">
+        <h5 class="mb-0"><i class="bi bi-collection"></i> Posts</h5>
+      </div>
       <table class="table">
         <thead>
           <tr>
@@ -109,10 +148,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
               <td class="text-end">
                 <div class="buttons">
-                  <a
-                    href="posts.php?id=<?= $post['id'] ?>"
-                    target="_blank"
-                    class="btn btn-primary btn-sm me-2">View</a>
+                  <a href="posts.php?id=<?= $post['id'] ?>" target="_blank" class="btn btn-primary btn-sm me-2">View</a>
                   <form method="post" class="d-inline">
                     <button type="submit" class="btn btn-danger btn-sm" type="submit" <?= $_SESSION['user']['role'] == 'admin' ? '' : 'disabled' ?>>Delete</button>
                     <input type="hidden" name="id" value="<?= $post['id'] ?>">
@@ -125,7 +161,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
       </table>
     </div>
     <div class="text-center">
-      <a href="dashboard.php" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+      <a href="dashboard.php" class="btn btn-primary mt-3"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
     </div>
   </div>
 

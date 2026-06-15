@@ -29,6 +29,21 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
       min-height: 100vh;
       flex-direction: column;
     }
+
+    .dashboard-card {
+      background: white;
+      border-radius: 20px;
+      padding: 35px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+      transition: all .3s ease;
+      height: 100%;
+    }
+
+    .dashboard-icon {
+      font-size: 4rem;
+      color: #0d6efd;
+    }
   </style>
 </head>
 
@@ -74,45 +89,37 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
       </div>
     </nav>
   </div>
-  <div class="container mx-auto my-5" style="max-width: 800px;">
-    <h1 class="h1 mb-4 text-center">Dashboard</h1>
-    <div class="row">
-      <div class="col">
-        <div class="card mb-2">
-          <div class="card-body">
-            <h5 class="card-title text-center">
-              <div class="mb-1">
-                <i class="bi bi-pencil-square" style="font-size: 3rem;"></i>
-              </div>
-              Manage Posts
-            </h5>
-            <div class="text-center mt-3">
-              <a href="manage-posts.php" class="btn btn-primary btn-sm">Access</a>
-            </div>
-          </div>
-        </div>
+  <div class="container mx-auto my-5">
+    <h1 class="h1 mb-4 text-center">Admin Dashboard</h1>
+  </div>
+  <div class="row g-4 justify-content-center">
+
+    <div class="col-md-6">
+      <div class="dashboard-card">
+
+        <i class="bi bi-pencil-square dashboard-icon"></i>
+
+        <h3>Manage Posts</h3>
+
+        <a href="manage-posts.php" class="btn btn-primary">Access Posts</a>
+
       </div>
-      <!-- if the user is not an admin, hides user management tab -->
-      <?php if ($_SESSION['user']['role'] == "admin"): ?>
-        <div class="col">
-          <div class="card mb-2">
-            <div class="card-body">
-              <h5 class="card-title text-center">
-                <div class="mb-1">
-                  <i class="bi bi-people" style="font-size: 3rem;"></i>
-                </div>
-                Manage Users
-              </h5>
-              <div class="text-center mt-3">
-                <a href="manage-users.php" class="btn btn-primary btn-sm">Access</a>
-              </div>
-            </div>
-          </div>
-        </div>
     </div>
-  <?php endif; ?>
+
+    <div class="col-md-6">
+      <div class="dashboard-card">
+
+        <i class="bi bi-people-fill dashboard-icon text-success"></i>
+
+        <h3>Manage Users</h3>
+        <a href="manage-users.php" class="btn btn-success">Access Users</a>
+      </div>
+    </div>
+
+
+  </div>
   <div class="mt-4 text-center">
-    <a href="index.php" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+    <a href="index.php" class="btn btn-primary"><i class="bi bi-arrow-left"></i> Back to Forums View</a>
   </div>
   </div>
   <!-- The main is here for a body content to ensure the footer stays below the page instead of a awkward position -->

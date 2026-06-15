@@ -32,7 +32,7 @@ if (isset($_POST['title']) && isset($_POST['content'])) {
 <html>
 
 <head>
-  <title>Simple CMS</title>
+  <title>Add New Post</title>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -45,38 +45,79 @@ if (isset($_POST['title']) && isset($_POST['content'])) {
     body {
       background: #f1f1f1;
     }
+
+    .post-add-box {
+      max-width: 850px;
+      margin: 60px auto;
+    }
+
+    .post-add-header {
+      background: linear-gradient(135deg, #0d6efd, #6610f2);
+      color: white;
+      padding: 30px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .post-add-card {
+      background: white;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-control {
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .btn-publish {
+      border-radius: 12px;
+      padding: 10px 22px;
+    }
+
+    .icon-circle {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+    }
   </style>
 </head>
 
 <body>
-  <div class="container mx-auto my-5" style="max-width: 700px;">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h1 class="h1">Add New Post</h1>
+  <div class="post-add-box">
+    <div class="post-add-header d-flex align-items-center">
+      <div class="icon-circle">
+        <i class="bi bi-plus-circle"></i>
+      </div>
+
+      <div>
+        <h1 class="mb-0">Add New Post</h1>
+      </div>
     </div>
-    <div class="card mb-2 p-4">
+    <div class="post-add-card">
       <form method="POST" id="addPostForm">
-        <div class="mb-3">
-          <label for="title" class="form-label">Title</label>
-          <input type="text" class="form-control" id="title" name="title" />
-        </div>
-        <div class="mb-3">
-          <label for="content" class="form-label">Content</label>
-          <textarea
-            class="form-control"
-            id="content"
-            rows="10"
-            name="content"></textarea>
-        </div>
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" placeholder="Enter Post Title" />
+        <label for="content" class="form-label">Content</label>
+        <textarea class="form-control" id="content" rows="4" name="content" placeholder="Enter Post Content"></textarea>
         <input type="hidden" name="post_by" id="post_by" value="1">
-        <div class="text-end">
-          <button type="submit" class="btn btn-primary">Add</button>
+        <div class="d-flex justify-content-end">
+
+          <button type="submit" class="btn btn-primary btn-publish mt-3"><i class="bi bi-send"></i> Publish Post</button>
         </div>
-      </form>
     </div>
     <div class="text-center">
-      <a href="manage-posts.php" class="btn btn-link btn-sm <?= ($role === 'admin') ? '' : 'd-none' ?>"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
-      <a href="index.php" class="btn btn-link btn-sm <?= ($role !== 'admin') ? '' : 'd-none' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts</a>
+      <a href="manage-posts.php" class="btn btn-primary mt-3 <?= ($role === 'admin') ? '' : 'd-none' ?>"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+      <a href="index.php" class="btn btn-primary mt-3 <?= ($role !== 'admin') ? '' : 'd-none' ?>"> <i class="bi bi-arrow-left"></i> Back to Posts</a>
     </div>
+  </div>
   </div>
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
