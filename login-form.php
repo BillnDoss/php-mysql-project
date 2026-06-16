@@ -3,7 +3,7 @@ session_start();
 
 // Forces you back into login.php after submitting
 if (isset($_SESSION['user'])) {
-  header("Location: login.php");
+  header("Location: index.php");
   exit;
 }
 
