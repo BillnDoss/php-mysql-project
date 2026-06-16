@@ -1,6 +1,11 @@
 <?php
 require("header.php");
 
+if (!isset($_SESSION['user'])) {
+  header("Location: index.php");
+  exit;
+}
+
 // variables and arrays for role and session validation
 $user = $_SESSION['user'] ?? null;
 $posterid = $user['id'] ?? null;

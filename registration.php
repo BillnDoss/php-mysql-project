@@ -16,9 +16,9 @@ $stmt->execute(array(
     ':password' => password_hash($password, PASSWORD_BCRYPT),
     ':role' => 2
 ));
- $registerSuccess = true;
- header("Location: login-form.php");
- exit;
+$registerSuccess = true;
+header("Location: login-form.php");
+exit;
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +32,7 @@ $stmt->execute(array(
 
 <body>
     <h1>User has been successfully registered.</h1>
-      <h2><a href='login-form.php' class="btn btn-primary">Click me to go to login form</a></h2>
+    <h2><a href='login-form.php' class="btn btn-primary">Click me to go to login form</a></h2>
 </body>
 
 </html>

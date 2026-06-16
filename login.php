@@ -19,6 +19,7 @@ if (isset($_POST['username'])) {
 
 
     $is_password_match = password_verify($password, $user['password']);
+    header("Location: login-form.php");
 
     // After checking if the password is verified, it will do 1 of 2 things 
     // if the user is logged in as a user it will redirect to index.php, but if logged in as admin it will redirect to dashboard.php

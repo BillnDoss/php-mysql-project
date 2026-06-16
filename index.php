@@ -11,8 +11,6 @@ $posts = $stmt->fetchAll();
 
 // this can be used for any undefined user variables since the data is already being stored in here
 $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
-// The button giving error was because the page was trying to find a user session that doesn't exist hence giving a unknwon array error
-// Solution was adding a variable with a isset session for user 
 
 ?>
 
@@ -132,19 +130,6 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
-  <footer>
-    <div class="container-fluid bg-dark py-4">
-      <div class="container text-center">
-        <div class="d-flex justify-content-center pb-2">
-          <i class="bi bi-facebook text-white px-2"></i>
-          <i class="bi bi-twitter text-white px-2"></i>
-          <i class="bi bi-instagram text-white px-2"></i>
-          <a href="https://github.com/BillnDoss/php-mysql-project" target="_blank"><i class="bi bi bi-github text-white px-2"></i></a>
-        </div>
-        <p class="text-white text-center">&copy; 2026 JTTY. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
 </body>
 
 </html>

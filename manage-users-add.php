@@ -1,6 +1,11 @@
 <?php
 require('header.php');
 
+if (isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'admin') {
+  header("Location: index.php");
+  exit;
+}
+
 $query = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
 
 if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_POST['role'])) {

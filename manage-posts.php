@@ -18,6 +18,11 @@ $posts = $stmt->fetchAll();
 
 $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
+if (isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'admin') {
+  header("Location: index.php");
+  exit;
+}
+
 ?>
 
 <!DOCTYPE html>
