@@ -17,7 +17,8 @@ $stmt->execute(array(
     ':role' => 2
 ));
  $registerSuccess = true;
- 
+ header("Location: login-form.php");
+ exit;
 ?>
 
 <!DOCTYPE html>
