@@ -46,7 +46,7 @@ $usersession = isset($_SESSION['user']) ? $_SESSION['user'] : null;
     }
 
     .page-header {
-      background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      background: blue;
       color: white;
     }
 
